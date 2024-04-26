@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    .container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+  cursor: pointer;
+  background-color: #ffffff;
+  border: 2px solid #f0f0f0;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.cell:hover {
+  background-color: #e0e0e0;
+}
+
+.cell.clicked {
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 20px;
+  font-size: 1.5em;
+}
+
+.restart-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.restart-btn:hover {
+  background-color: #45a049;
+}
+
+.mode-buttons {
+  margin-top: 20px;
+}
+
+.mode-buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #008CBA;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.mode-buttons button:hover {
+  background-color: #005f7a;
+}
+
+  </style>
+</head>
+<body>
+  <center>
+
+  <div class="container">
+    <center>
+    <h1>Tic Tac Toe</h1>
+    <div class="board">
+      <div class="cell" data-cell-index="0"></div>
+      <div class="cell" data-cell-index="1"></div>
+      <div class="cell" data-cell-index="2"></div>
+      <div class="cell" data-cell-index="3"></div>
+      <div class="cell" data-cell-index="4"></div>
+      <div class="cell" data-cell-index="5"></div>
+      <div class="cell" data-cell-index="6"></div>
+      <div class="cell" data-cell-index="7"></div>
+      <div class="cell" data-cell-index="8"></div>
+    </div>
+    <div class="status"></div>
+    <button class="restart-btn">Restart</button>
+    <div class="mode-buttons">
+      <button class="player-vs-player-btn">Player vs. Player</button>
+      <button class="player-vs-ai-btn">Player vs. AI</button>
+    </div>
+    </center>
+  </div>
+  </center>
+
+  <script>
+    const cells = document.querySelectorAll('.cell');
+const status = document.querySelector('.status');
+const restartBtn = document.querySelector('.restart-btn');
+
+let currentPlayer = 'X';
+let gameActive = true;
+let gameState = ['', '', '', '', '', '', '', '', ''];
+
+const winningConditions = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+function handleCellClick(event) {
+  const cell = event.target;
+  const cellIndex = parseInt(cell.getAttribute('data-cell-index'));
+
+  if (gameState[cellIndex] !== '' || !gameActive) return;
+
+  gameState[cellIndex] = currentPlayer;
+  cell.textContent = currentPlayer;
+
+  if (checkWin()) {
+    status.textContent = `${currentPlayer} wins!`;
+    gameActive = false;
+    return;
+  }
+
+  if (checkDraw()) {
+    status.textContent = 'It\'s a draw!';
+    gameActive = false;
+    return;
+  }
+
+  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  status.textContent = `${currentPlayer}'s turn`;
+}
+
+function checkWin() {
+  return winningConditions.some(condition => {
+    return condition.every(index => {
+      return gameState[index] === currentPlayer;
+    });
+  });
+}
+
+function checkDraw() {
+  return gameState.every(cell => {
+    return cell !== '';
+  });
+}
+
+function restartGame() {
+  currentPlayer = 'X';
+  gameActive = true;
+  gameState = ['', '', '', '', '', '', '', '', ''];
+  status.textContent = `${currentPlayer}'s turn`;
+  cells.forEach(cell => cell.textContent = '');
+}
+
+cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+restartBtn.addEventListener('click', restartGame);
+
+  </script>
+</body>
+</html>
